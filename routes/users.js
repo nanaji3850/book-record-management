@@ -1,41 +1,17 @@
 const express = require("express");
 
+const {users} = require("../data/users.json");
 
-const userroutes = require("./routes/users.js");
-const bookroutes = require("./routes/books.js");
-const app = express();
+const routers = express.Router();
 
-const PORT = 8081;
-
-app.use(express.json());
-
-app.use("/users", userroutes);
-app.use("/books", bookroutes);
-
-/**
- * Routers: /users
- * Methods: GET
- * Description: Get all users
- * Access: public
- * Parameters: None
- */
-
-app.get("/users", (req,res) => {
+routers.get("/", (req,res) => {
     res.status(200).json({
         success: true,
         data:users,
     });
 });
 
-/**
- * Router: /users/:id
- * Methods: GET
- * Description: Get one specific User
- * Access: Piblic
- * Parameters: None
- */
-
-app.get("/users/:id", (req,res) => {
+routers.get("/:id", (req,res) => {
     const {id} = req.params;
     const user = users.find((each) => each.id == id);
     if (!user){
@@ -51,15 +27,7 @@ app.get("/users/:id", (req,res) => {
     })
 })
 
-/**
- * Router: /users
- * Methods: POST
- * Description: Add new user
- * Access: Piblic
- * Parameters: None
- */
-
-app.post("/users", (req,res) => {
+routers.post("/", (req,res) => {
     const {id,name,surname,issuedbook,issueddate,returndate,subscriptiontype,subscriptiondate} = req.body;
     const user = users.find((each) => each.id == id);
     if(user){
@@ -86,14 +54,7 @@ app.post("/users", (req,res) => {
     })
 })
 
-/**
- * Router: /users/:id
- * Methods: PUT
- * Description: update user by id
- * Access: Piblic
- * Parameters: id
- */
-app.put("/users/:id", (req,res) => {
+routers.put("/:id", (req,res) => {
     const {id} = req.params;
     const {data} = req.body;
 
@@ -120,18 +81,9 @@ app.put("/users/:id", (req,res) => {
         udate:updatesuerdata,
     })
 
-    });
+});
 
- 
-/**
- * Router: /users/:id
- * Methods: DELETE
- * Description: Delete user by id
- * Access: Piblic
- * Parameters: id
- */
-
-app.delete("/users/:id", (req,res) => {
+routers.delete("/:id", (req,res) => {
     const {id} = req.params;
     const user = users.find((each) => each.id==id);
     if(!user){
@@ -144,14 +96,6 @@ app.delete("/users/:id", (req,res) => {
 
 });
 
+module.exports = routers;
 
-app.get("/",(req,res) => {
-    res.status(200).json({
-        message: "Server is up and running :-)",
-    });
-});
-
-app.listen(PORT, ()=>{
-    console.log('server is running at port ${PORT}');
-});
 
